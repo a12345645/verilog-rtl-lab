@@ -1,0 +1,3 @@
+[submodule "sim-sta"]
+	path = sim-sta
+	url = https://github.com/a12345645/sta-sim
