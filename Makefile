@@ -1,10 +1,28 @@
 SIM=iverilog
 VVP=vvp
 
-TARGET=sim/adder
-SRC=tb/adder_tb.v rtl/adder.v
+RTL=rtl/adder.v
+TB=tb/adder_tb.v
+SRC=$(TB) $(RTL)
 
-all:
+TARGET=sim/adder
+SYNTH_OUT=synth/adder_synth.v
+
+.PHONY: all clean synth
+
+all: $(TARGET)
+	$(VVP) $(TARGET)
+	make synth
+
+$(TARGET): $(SRC)
 	mkdir -p sim
 	$(SIM) -o $(TARGET) $(SRC)
-	$(VVP) $(TARGET)
+
+synth: $(RTL)
+	rm -rf synth
+	mkdir -p synth
+	yosys -p "read_verilog $(RTL); synth -top adder; write_verilog $(SYNTH_OUT)"
+
+clean:
+	rm -rf sim
+	rm -rf synth
